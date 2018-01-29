@@ -1,0 +1,14 @@
+{
+  "name": "lyftoruber",
+  "version": "1.0.0",
+  "description": "Lyft or Uber comparator",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Moove",
+  "license": "ISC",
+  "dependencies": {
+    "alexa-sdk": "^1.0.25"
+  }
+}
