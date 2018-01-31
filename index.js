@@ -10,6 +10,24 @@ const states = {
 };
 
 const newSessionHandlers = {
+    "AMAZON.StopIntent": function () {
+        this.emit(':tell', "Goodbye");
+    },
+ 
+    "AMAZON.CancelIntent": function () {
+        this.emit(':tell', "Goodbye");
+    },
+
+    "AMAZON.HelpIntent" : function () {
+        var speechText = "Here are somethings you can say: ";
+        speechText += " Get Best rate for my trip.";
+        speechText += " Check rate for my travel.";
+        speechText += " Who offers good rate. Lyft or Uber ?";
+
+        this.emit(':ask', speechText, speechText);
+        
+    },
+
     'NewSession': function() {
         if(Object.keys(this.attributes).length === 0) { // Check if it's the first time the skill has been invoked
             this.attributes['source'] = "";
@@ -17,22 +35,18 @@ const newSessionHandlers = {
             this.attributes['filterby'] = "";
         }
         this.handler.state = states.STARTMODE;
-        this.response.speak(`Welcome to ${skillName}. Would you like to check the rate for your destination ?`)
-                    .listen('Say yes to check or no to quit.');
-        this.emit(':responseReady');
+        this.emit(':ask', `Welcome to ${skillName}. Would you like to check the best offer for your destination ?`, 'Say yes to check or no to quit.');
     }
 };
 
 const startHandlers = Alexa.CreateStateHandler (states.STARTMODE, {
     'AMAZON.YesIntent': function() {
         this.handler.state = states.DESTINATIONMODE;
-        this.response.speak(`Great. What's your destination address ?`);
-        this.emit(':responseReady');
+        this.emit(':ask', `Great. What's your destination address ?`);
     },
 
     'AMAZON.NoIntent': function() {
-        this.response.speak('Ok, see you next time!');
-        this.emit(':responseReady');
+        this.emit(':tell', 'Ok, see you next time!');
     }    
 })
 
@@ -42,8 +56,7 @@ const destinationHandlers = Alexa.CreateStateHandler (states.DESTINATIONMODE, {
         console.log ("Destination Address " + this.attributes['destination']);
 
         this.handler.state = states.SOURCEMODE;
-        this.response.speak(`Ok. What's your source address ?`);
-        this.emit(':responseReady');
+        this.emit(':ask', `Ok. What's your source address ?`);
     }
 })
 
@@ -53,8 +66,7 @@ const sourceHandlers = Alexa.CreateStateHandler (states.SOURCEMODE, {
         console.log ("Source Address " + this.attributes['source']);
 
         this.handler.state = states.FILTERBYMODE;
-        this.response.speak(`Ok. What kind of Car you would like ?`);
-        this.emit(':responseReady');
+        this.emit(':ask', `Ok. What kind of Car you would like ?. You can say - Standard, Intermediate, Car pool or Luxury`);
     }
 })
 
@@ -62,9 +74,13 @@ const filterHandlers = Alexa.CreateStateHandler (states.FILTERBYMODE, {
     'filterIntent' : function () {
         this.attributes['filterby'] = this.event.request.intent.slots.filter.value;
         console.log ("Filter By Value" + this.attributes['filterby']);
+        this.emitWithState("resultIntent");
+    },
 
-        this.handler.state = states.FILTERBYMODE;
-        this.emit (':tell', 'I found a best rate for you');
+    'resultIntent' : function () {
+        //this.handler.state = states.STARTMODE;
+
+        this.emit(':tell', 'This will be the best choice for you');
     }
 })
 
