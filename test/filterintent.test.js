@@ -13,7 +13,14 @@ describe ("Testing a session with FilterIntent", function () {
             "session": {
                 "new": false,
                 "sessionId": "1234",
-                "attributes": {"source": '2491 Winchester Rd, Memphis, TN', "destination": '10 FedEx Parkway, Collierville, TN', "filterby": '', "STATE": '_FILTERBYMODE' },
+                "attributes": {
+                    "source": '2491 Winchester Rd, Memphis, TN', 
+                    "startLatitude" : '28.0819002',
+                    "startLongitude" : "-82.4106486",
+                    "destination": '10 FedEx Parkway, Collierville, TN', 
+                    "endLongitude" : '-82.5370781',
+                    "endLatitude" : '27.9834776',
+                    "filterby": '', "STATE": '_FILTERBYMODE' },
                 "user": {
                   "userId": "amzn1.ask.account.[unique-value-here]"
                 },
@@ -28,7 +35,7 @@ describe ("Testing a session with FilterIntent", function () {
                 "type": "IntentRequest",
                 "requestId": "amzn1.echo-api.request.[unique-value-here]",
                 "intent": {
-                    "name": "filterIntent",
+                    "name": "FilterIntent",
                     "slots": {
                         "filter" : {
                             "name" : "filter",
